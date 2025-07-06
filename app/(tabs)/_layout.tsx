@@ -80,6 +80,12 @@ export default function TabLayout() {
                     ),
                 }}
             />
+            <Tabs.Screen
+                name="(post)/[username]/post/[postID]"
+                options={{
+                    href: null,
+                }}
+            />
         </Tabs>
     );
 }
