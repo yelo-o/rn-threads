@@ -1,8 +1,11 @@
 import { Text, View, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 
 export default function Index() {
     const router = useRouter();
+    const pathname = usePathname();
+
+    console.log("pathname >> ", pathname);
     return (
         <View
             style={{
@@ -17,7 +20,9 @@ export default function Index() {
                         router.push(`/`);
                     }}
                 >
-                    <Text>For you</Text>
+                    <Text style={{ color: pathname === "/" ? "red" : "black" }}>
+                        For you
+                    </Text>
                 </TouchableOpacity>
             </View>
             <View>
@@ -26,7 +31,9 @@ export default function Index() {
                         router.push(`/following`);
                     }}
                 >
-                    <Text>Following</Text>
+                    <Text style={{ color: pathname === "/" ? "black" : "red" }}>
+                        Following
+                    </Text>
                 </TouchableOpacity>
             </View>
             <View>
