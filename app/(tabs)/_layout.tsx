@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs, useRouter } from "expo-router";
 import { useState } from "react";
-import { Text, View, Modal, TouchableOpacity } from "react-native";
+import { Modal, Text, TouchableOpacity, View } from "react-native";
 
 export default function TabLayout() {
     const router = useRouter();
@@ -19,6 +19,7 @@ export default function TabLayout() {
     return (
         <>
             <Tabs
+                backBehavior="history"
                 screenOptions={{
                     headerShown: false,
                 }}

@@ -31,64 +31,124 @@ export default function Index() {
             <View>
                 <TouchableOpacity
                     onPress={() => {
-                        router.push(`/activity`);
+                        router.replace(`/activity`);
                     }}
                 >
-                    <Text>All</Text>
+                    <Text
+                        style={{
+                            color: pathname === "/activity" ? "red" : "black",
+                        }}
+                    >
+                        All
+                    </Text>
                 </TouchableOpacity>
             </View>
             <View>
                 <TouchableOpacity
                     onPress={() => {
-                        router.push(`/activity/follows`);
+                        router.replace(`/activity/follows`);
                     }}
                 >
-                    <Text>Follows</Text>
+                    <Text
+                        style={{
+                            color:
+                                pathname === "/activity/follows"
+                                    ? "red"
+                                    : "black",
+                        }}
+                    >
+                        Follows
+                    </Text>
                 </TouchableOpacity>
             </View>
             <View>
                 <TouchableOpacity
                     onPress={() => {
-                        router.push(`/activity/replies`);
+                        router.replace(`/activity/replies`);
                     }}
                 >
-                    <Text>Replies</Text>
+                    <Text
+                        style={{
+                            color:
+                                pathname === "/activity/replies"
+                                    ? "red"
+                                    : "black",
+                        }}
+                    >
+                        Replies
+                    </Text>
                 </TouchableOpacity>
             </View>
             <View>
                 <TouchableOpacity
                     onPress={() => {
-                        router.push(`/activity/mentions`);
+                        router.replace(`/activity/mentions`);
                     }}
                 >
-                    <Text>Mentions</Text>
+                    <Text
+                        style={{
+                            color:
+                                pathname === "/activity/mentions"
+                                    ? "red"
+                                    : "black",
+                        }}
+                    >
+                        Mentions
+                    </Text>
                 </TouchableOpacity>
             </View>
             <View>
                 <TouchableOpacity
                     onPress={() => {
-                        router.push(`/activity/quotes`);
+                        router.replace(`/activity/quotes`);
                     }}
                 >
-                    <Text>Quotes</Text>
+                    <Text
+                        style={{
+                            color:
+                                pathname === "/activity/quotes"
+                                    ? "red"
+                                    : "black",
+                        }}
+                    >
+                        Quotes
+                    </Text>
                 </TouchableOpacity>
             </View>
             <View>
                 <TouchableOpacity
                     onPress={() => {
-                        router.push(`/activity/reposts`);
+                        router.replace(`/activity/reposts`);
                     }}
                 >
-                    <Text>Reposts</Text>
+                    <Text
+                        style={{
+                            color:
+                                pathname === "/activity/reposts"
+                                    ? "red"
+                                    : "black",
+                        }}
+                    >
+                        Reposts
+                    </Text>
                 </TouchableOpacity>
             </View>
             <View>
                 <TouchableOpacity
                     onPress={() => {
-                        router.push(`/activity/verified`);
+                        router.replace(`/activity/verified`);
                     }}
                 >
-                    <Text>Verified</Text>
+                    <Text
+                        style={{
+                            color:
+                                pathname === "/activity/verified"
+                                    ? "red"
+                                    : "black",
+                        }}
+                    >
+                        Verified
+                    </Text>
                 </TouchableOpacity>
             </View>
         </View>

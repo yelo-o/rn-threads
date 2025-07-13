@@ -17,7 +17,7 @@ export default function Index() {
             <View>
                 <TouchableOpacity
                     onPress={() => {
-                        router.push(`/`);
+                        router.replace(`/`);
                     }}
                 >
                     <Text style={{ color: pathname === "/" ? "red" : "black" }}>
@@ -28,7 +28,7 @@ export default function Index() {
             <View>
                 <TouchableOpacity
                     onPress={() => {
-                        router.push(`/following`);
+                        router.replace(`/following`);
                     }}
                 >
                     <Text style={{ color: pathname === "/" ? "black" : "red" }}>
