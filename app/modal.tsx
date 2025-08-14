@@ -62,16 +62,19 @@ export default function Modal() {
 
     const replyOptions = ["Anyone", "Profiles you follow", "Mentioned only"];
 
-    const handleCancel = () => {};
+    const handleCancel = () => {
+        if (isPosting) return;
+        router.back();
+    };
 
     const handlePost = () => {};
 
     const updateThreadText = (id: string, text: string) => {
-        setThreads((prevThreads) => {
+        setThreads((prevThreads) =>
             prevThreads.map((thread) =>
                 thread.id === id ? { ...thread, text } : thread,
-            );
-        });
+            ),
+        );
     };
 
     const canAddThread = (threads.at(-1)?.text.trim().length ?? 0) > 0;
@@ -82,9 +85,9 @@ export default function Modal() {
     const addLocationToThread = (id: string, location: [number, number]) => {};
 
     const removeThread = (id: string) => {
-        setThreads((prevThreads) => {
-            prevThreads.filter((thread) => thread.id !== id);
-        });
+        setThreads((prevThreads) =>
+            prevThreads.filter((thread) => thread.id !== id),
+        );
     };
 
     const pickImage = async (id: string) => {};
@@ -249,10 +252,7 @@ export default function Modal() {
                     />
                 }
                 style={styles.list}
-                contentContainerStyle={{
-                    paddingBottom: 100,
-                    backgroundColor: "#ddd",
-                }}
+                contentContainerStyle={{ backgroundColor: "#ddd" }}
                 keyboardShouldPersistTaps="handled"
             />
 
