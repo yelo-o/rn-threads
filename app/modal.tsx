@@ -25,7 +25,31 @@ interface Thread {
     location?: [number, number];
     imageUris: string[];
 }
-
+export function ListFooter({
+    canAddThread,
+    addThread,
+}: {
+    canAddThread: boolean;
+    addThread: () => void;
+}) {
+    return (
+        <View style={styles.listFooter}>
+            <View style={styles.listFooterAvatar}>
+                <Image
+                    source={require("../assets/images/avatar.png")}
+                    style={styles.avatarSmall}
+                />
+            </View>
+            <View>
+                <Pressable onPress={addThread} style={styles.input}>
+                    <Text style={{ color: canAddThread ? "#999" : "#aaa" }}>
+                        Add to Thread
+                    </Text>
+                </Pressable>
+            </View>
+        </View>
+    );
+}
 export default function Modal() {
     const router = useRouter();
     const [threads, setThreads] = useState<Thread[]>([
@@ -42,7 +66,13 @@ export default function Modal() {
 
     const handlePost = () => {};
 
-    const updateThreadText = (id: string, text: string) => {};
+    const updateThreadText = (id: string, text: string) => {
+        setThreads((prevThreads) => {
+            prevThreads.map((thread) =>
+                thread.id === id ? { ...thread, text } : thread,
+            );
+        });
+    };
 
     const canAddThread = (threads.at(-1)?.text.trim().length ?? 0) > 0;
     const canPost = threads.every((thread) => thread.text.trim().length > 0);
@@ -51,7 +81,11 @@ export default function Modal() {
 
     const addLocationToThread = (id: string, location: [number, number]) => {};
 
-    const removeThread = (id: string) => {};
+    const removeThread = (id: string) => {
+        setThreads((prevThreads) => {
+            prevThreads.filter((thread) => thread.id !== id);
+        });
+    };
 
     const pickImage = async (id: string) => {};
 
@@ -175,7 +209,76 @@ export default function Modal() {
         </View>
     );
 
-    return <View style={[styles.container, { paddingTop: insets.top }]} />;
+    return (
+        <View style={[styles.container, { paddingTop: insets.top }]}>
+            {/* Header */}
+            <View style={styles.header}>
+                <Pressable onPress={handleCancel} disabled={isPosting}>
+                    <Text
+                        style={[
+                            styles.cancel,
+                            isPosting && styles.disabledText,
+                        ]}
+                    >
+                        Cancel
+                    </Text>
+                </Pressable>
+                <Text style={styles.title}>New Thread</Text>
+                <View style={styles.headerRightPlaceholder} />
+            </View>
+            {/* FlatList */}
+            <FlatList
+                data={threads}
+                keyExtractor={(item) => item.id}
+                renderItem={renderThreadItem}
+                ListFooterComponent={
+                    <ListFooter
+                        canAddThread={canAddThread}
+                        addThread={() => {
+                            if (canAddThread) {
+                                setThreads((prevThreads) => [
+                                    ...prevThreads,
+                                    {
+                                        id: Date.now().toString(),
+                                        text: "",
+                                        imageUris: [],
+                                    },
+                                ]);
+                            }
+                        }}
+                    />
+                }
+                style={styles.list}
+                contentContainerStyle={{
+                    paddingBottom: 100,
+                    backgroundColor: "#ddd",
+                }}
+                keyboardShouldPersistTaps="handled"
+            />
+
+            {/* Footer */}
+            <View
+                style={[styles.footer, { paddingBottom: insets.bottom + 10 }]}
+            >
+                <Pressable onPress={() => setIsDropdownVisible(true)}>
+                    <Text style={styles.footerText}>
+                        {replyOption} can reply & quote
+                    </Text>
+                </Pressable>
+
+                <Pressable
+                    style={[
+                        styles.postButton,
+                        !canPost && styles.postButtonDisabled,
+                    ]}
+                    disabled={!canPost}
+                    onPress={handlePost}
+                >
+                    <Text style={styles.postButtonText}>Post</Text>
+                </Pressable>
+            </View>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
