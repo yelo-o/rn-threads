@@ -96,7 +96,41 @@ export default function Modal() {
 
     const removeImageFromThread = (id: string, uriToRemove: string) => {};
 
-    const getMyLocation = async (id: string) => {};
+    const getMyLocation = async (id: string) => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        console.log("getMyLocation", status);
+        if (status !== "granted") {
+            Alert.alert(
+              "Location permission not granted",
+              "Please grant location permission to use this feature",
+              [
+                  {
+                      text: "Open settings",
+                      onPress: () => {
+                          Linking.openSettings();
+                      },
+                  },
+                  {
+                      text: "Cancel",
+                  },
+              ]
+            );
+            return;
+        }
+
+        const location = await Location.getCurrentPositionAsync({});
+
+        setThreads((prevThreads) =>
+          prevThreads.map((thread) =>
+            thread.id === id
+              ? {
+                  ...thread,
+                  location: [location.coords.latitude, location.coords.longitude],
+              }
+              : thread
+          )
+        );
+    };
 
     const renderThreadItem = ({
         item,
@@ -115,7 +149,7 @@ export default function Modal() {
             </View>
             <View style={styles.contentContainer}>
                 <View style={styles.userInfoContainer}>
-                    <Text style={styles.username}>zerohch0</Text>
+                    <Text style={styles.username}>layer7654321</Text>
                     {index > 0 && (
                         <TouchableOpacity
                             onPress={() => removeThread(item.id)}
