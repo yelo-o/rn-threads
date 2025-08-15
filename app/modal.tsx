@@ -1,22 +1,22 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
+import * as MediaLibrary from "expo-media-library";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
 import {
-    View,
+    Alert,
+    FlatList,
+    Image,
+    Linking,
+    Pressable,
+    StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    FlatList,
-    Image,
-    StyleSheet,
-    Platform,
-    Modal as RNModal,
-    Pressable,
-    Linking,
-    Alert,
+    View,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import * as Location from "expo-location";
 
 interface Thread {
     id: string;
@@ -72,48 +72,149 @@ export default function Modal() {
     const updateThreadText = (id: string, text: string) => {
         setThreads((prevThreads) =>
             prevThreads.map((thread) =>
-                thread.id === id ? { ...thread, text } : thread,
-            ),
+                thread.id === id ? { ...thread, text } : thread
+            )
         );
     };
 
-    const canAddThread = (threads.at(-1)?.text.trim().length ?? 0) > 0;
-    const canPost = threads.every((thread) => thread.text.trim().length > 0);
-
-    const addImageToThread = (id: string, uri: string) => {};
-
-    const addLocationToThread = (id: string, location: [number, number]) => {};
+    const canAddThread =
+        (threads.at(-1)?.text.trim().length ?? 0) > 0 ||
+        (threads.at(-1)?.imageUris.length ?? 0) > 0;
+    const canPost = threads.every(
+        (thread) => thread.text.trim().length > 0 || thread.imageUris.length > 0
+    );
 
     const removeThread = (id: string) => {
         setThreads((prevThreads) =>
-            prevThreads.filter((thread) => thread.id !== id),
+            prevThreads.filter((thread) => thread.id !== id)
         );
     };
 
-    const pickImage = async (id: string) => {};
+    const pickImage = async (id: string) => {
+        let { status } =
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+            Alert.alert(
+                "Photos permission not granted",
+                "Please grant photos permission to use this feature",
+                [
+                    {
+                        text: "Open settings",
+                        onPress: () => {
+                            Linking.openSettings();
+                        },
+                    },
+                    {
+                        text: "Cancel",
+                    },
+                ]
+            );
+            return;
+        }
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ["images", "livePhotos", "videos"],
+            allowsMultipleSelection: true,
+            selectionLimit: 5,
+        });
+        if (!result.canceled) {
+            console.log("pickImage result", result);
+            setThreads((prevThreads) =>
+                prevThreads.map((thread) =>
+                    thread.id === id
+                        ? {
+                              ...thread,
+                              imageUris: thread.imageUris.concat(
+                                  result.assets?.map((asset) => asset.uri) ?? []
+                              ),
+                          }
+                        : thread
+                )
+            );
+        }
+    };
 
-    const takePhoto = async (id: string) => {};
+    const takePhoto = async (id: string) => {
+        let { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== "granted") {
+            Alert.alert(
+                "Camera permission not granted",
+                "Please grant camera permission to use this feature",
+                [
+                    {
+                        text: "Open settings",
+                        onPress: () => {
+                            Linking.openSettings();
+                        },
+                    },
+                    {
+                        text: "Cancel",
+                    },
+                ]
+            );
+            return;
+        }
 
-    const removeImageFromThread = (id: string, uriToRemove: string) => {};
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ["images", "livePhotos", "videos"],
+            allowsMultipleSelection: true,
+            selectionLimit: 5,
+        });
+        console.log("takePhoto result", result);
+
+        status = (await MediaLibrary.requestPermissionsAsync()).status;
+        if (status === "granted" && result.assets?.[0].uri) {
+            MediaLibrary.saveToLibraryAsync(result.assets[0].uri);
+        }
+
+        if (!result.canceled) {
+            setThreads((prevThreads) =>
+                prevThreads.map((thread) =>
+                    thread.id === id
+                        ? {
+                              ...thread,
+                              imageUris: thread.imageUris.concat(
+                                  result.assets?.map((asset) => asset.uri) ?? []
+                              ),
+                          }
+                        : thread
+                )
+            );
+        }
+    };
+
+    const removeImageFromThread = (id: string, uriToRemove: string) => {
+        setThreads((prevThreads) =>
+            prevThreads.map((thread) =>
+                thread.id === id
+                    ? {
+                          ...thread,
+                          imageUris: thread.imageUris.filter(
+                              (uri) => uri !== uriToRemove
+                          ),
+                      }
+                    : thread
+            )
+        );
+    };
 
     const getMyLocation = async (id: string) => {
         let { status } = await Location.requestForegroundPermissionsAsync();
         console.log("getMyLocation", status);
         if (status !== "granted") {
             Alert.alert(
-              "Location permission not granted",
-              "Please grant location permission to use this feature",
-              [
-                  {
-                      text: "Open settings",
-                      onPress: () => {
-                          Linking.openSettings();
-                      },
-                  },
-                  {
-                      text: "Cancel",
-                  },
-              ]
+                "Location permission not granted",
+                "Please grant location permission to use this feature",
+                [
+                    {
+                        text: "Open settings",
+                        onPress: () => {
+                            Linking.openSettings();
+                        },
+                    },
+                    {
+                        text: "Cancel",
+                    },
+                ]
             );
             return;
         }
@@ -121,14 +222,17 @@ export default function Modal() {
         const location = await Location.getCurrentPositionAsync({});
 
         setThreads((prevThreads) =>
-          prevThreads.map((thread) =>
-            thread.id === id
-              ? {
-                  ...thread,
-                  location: [location.coords.latitude, location.coords.longitude],
-              }
-              : thread
-          )
+            prevThreads.map((thread) =>
+                thread.id === id
+                    ? {
+                          ...thread,
+                          location: [
+                              location.coords.latitude,
+                              location.coords.longitude,
+                          ],
+                      }
+                    : thread
+            )
         );
     };
 
