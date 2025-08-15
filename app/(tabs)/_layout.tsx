@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { type BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
 import { Tabs, useRouter } from "expo-router";
 import { useRef, useState } from "react";
+
 import {
     Animated,
     Modal,
@@ -23,6 +24,11 @@ export default function TabLayout() {
 
     const closeLoginModal = () => {
         setIsLoginModalOpen(false);
+    };
+
+    const toLoginPage = () => {
+        setIsLoginModalOpen(false);
+        router.push("/login");
     };
 
     const AnimatedTabBarButton = ({
@@ -193,7 +199,9 @@ export default function TabLayout() {
                             padding: 20,
                         }}
                     >
-                        <Text>Login Modal</Text>
+                        <Pressable onPress={toLoginPage}>
+                            <Text>Login Modal</Text>
+                        </Pressable>
                         <TouchableOpacity onPress={closeLoginModal}>
                             <Ionicons name="close" size={24} color="#555" />
                         </TouchableOpacity>
