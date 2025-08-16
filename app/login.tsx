@@ -1,36 +1,17 @@
 import { Redirect, router } from "expo-router";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { useContext } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AuthContext } from "./_layout";
 
 export default function Login() {
     const insets = useSafeAreaInsets();
-    const isLoggedIn = false;
+    const { user, login } = useContext(AuthContext);
+    const isLoggedIn = !!user;
     if (isLoggedIn) {
         return <Redirect href="/(tabs)" />;
     }
-    const onLogin = () => {
-        console.log("Login button pressed");
-        fetch("/login", {
-            method: "POST",
-            body: JSON.stringify({
-                username: "testuser",
-                password: "password123",
-            }),
-        })
-            .then((res) => {
-                console.log("Response status:", res.status);
-                if (res.status >= 400) {
-                    return Alert.alert("Login failed", "Invalid credentials");
-                }
-                return res.json();
-            })
-            .then((data) => {
-                console.log("Login successful:", data);
-            })
-            .catch((error) => {
-                console.error("Login failed:", error);
-            });
-    };
+
     return (
         <View style={{ paddingTop: insets.top }}>
             <Pressable
@@ -40,7 +21,7 @@ export default function Login() {
             >
                 <Text>Back</Text>
             </Pressable>
-            <Pressable style={styles.loginButton} onPress={onLogin}>
+            <Pressable style={styles.loginButton} onPress={login}>
                 <Text style={styles.loginButtonText}>Login</Text>
             </Pressable>
         </View>
@@ -53,6 +34,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
         width: 100,
+        alignItems: "center",
     },
     loginButtonText: {
         color: "white",

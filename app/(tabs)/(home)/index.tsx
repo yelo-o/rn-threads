@@ -1,5 +1,7 @@
+import { AuthContext } from "@/app/_layout";
 import { BlurView } from "expo-blur";
 import { usePathname, useRouter } from "expo-router";
+import { useContext } from "react";
 import {
     Dimensions,
     Image,
@@ -14,7 +16,8 @@ export default function Index() {
     const router = useRouter();
     const pathname = usePathname();
     const insets = useSafeAreaInsets();
-    const isLoggedIn = false;
+    const { user } = useContext(AuthContext);
+    const isLoggedIn = !!user;
 
     console.log("pathname >> ", pathname);
     console.log("insets: ", insets);

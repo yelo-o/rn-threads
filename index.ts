@@ -13,6 +13,10 @@ if (__DEV__) {
                         refreshToken: "mocked-refresh-token",
                         user: {
                             id: "testuser",
+                            name: "Test User",
+                            description: "Mocked user for testing",
+                            profileImage:
+                                "https://example.com/mock-profile-image.jpg",
                         },
                     };
                 } else {
