@@ -1,10 +1,13 @@
 import { AuthContext } from "@/app/_layout";
+import SideMenu from "@/components/SideMenu";
+import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { usePathname, useRouter } from "expo-router";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import {
     Dimensions,
     Image,
+    Pressable,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -18,6 +21,7 @@ export default function Index() {
     const insets = useSafeAreaInsets();
     const { user } = useContext(AuthContext);
     const isLoggedIn = !!user;
+    const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
 
     console.log("pathname >> ", pathname);
     console.log("insets: ", insets);
@@ -34,7 +38,24 @@ export default function Index() {
             ]}
         >
             <BlurView style={styles.header} intensity={70}>
-                <Image source={require("@/assets/images/react-logo.png")} />
+                {isLoggedIn && (
+                    <Pressable
+                        style={styles.menuButton}
+                        onPress={() => {
+                            setIsSideMenuOpen(true);
+                        }}
+                    >
+                        <Ionicons name="menu" size={24} color="black" />
+                    </Pressable>
+                )}
+                <SideMenu
+                    isVisible={isSideMenuOpen}
+                    onClose={() => setIsSideMenuOpen(false)}
+                />
+                <Image
+                    source={require("../../../assets/images/react-logo.png")}
+                    style={styles.headerLogo}
+                />
                 {!isLoggedIn && (
                     <TouchableOpacity
                         style={styles.loginButton}
@@ -126,7 +147,7 @@ const styles = StyleSheet.create({
     },
     loginButton: {
         position: "absolute",
-        right: 10,
+        right: 20,
         top: 0,
         backgroundColor: "black",
         borderWidth: 1,
@@ -137,5 +158,10 @@ const styles = StyleSheet.create({
     },
     loginButtonText: {
         color: "white",
+    },
+    menuButton: {
+        position: "absolute",
+        left: 20,
+        top: 10,
     },
 });

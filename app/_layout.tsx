@@ -1,14 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { Alert } from "react-native";
 
 interface User {
     id: string;
     name: string;
     description: string;
-    profileImage: string;
+    profileImageUrl: string;
 }
 
 export const AuthContext = createContext<{
@@ -59,6 +59,13 @@ export default function RootLayout() {
             Alert.alert("Logged out", "You have been logged out successfully");
         });
     };
+
+    useEffect(() => {
+        AsyncStorage.getItem("userId").then((user) => {
+            setUser(user ? JSON.parse(user) : null);
+        });
+        // TODO - validate access token and refresh if necessary
+    }, []);
 
     return (
         <AuthContext value={{ user, login, logout }}>

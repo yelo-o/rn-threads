@@ -15,8 +15,8 @@ if (__DEV__) {
                             id: "testuser",
                             name: "Test User",
                             description: "Mocked user for testing",
-                            profileImage:
-                                "https://example.com/mock-profile-image.jpg",
+                            profileImageUrl:
+                                "https://avatars.githubusercontent.com/u/885857?v=4",
                         },
                     };
                 } else {
